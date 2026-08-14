@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.restaurant.gui.DashboardController"
+      spacing="12" prefWidth="480" prefHeight="520">
+
+    <padding>
+        <Insets top="25" right="30" bottom="25" left="30"/>
+    </padding>
+
+    <Label text="Customer Dashboard" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <Label text="Profile" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+    <Label fx:id="usernameLabel" text="Username: -"/>
+    <Label fx:id="idLabel" text="Customer ID: -"/>
+    <Label fx:id="phoneLabel" text="Phone: -"/>
+    <Label fx:id="dobLabel" text="Date of Birth: -"/>
+    <Label fx:id="dietaryLabel" text="Dietary Preferences: -"/>
+
+    <Label text="Account" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+    <Label fx:id="balanceLabel" text="Balance: -"/>
+    <Label fx:id="loyaltyLabel" text="Loyalty Points: -"/>
+
+    <Label text="Upcoming Reservations" style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+    <ListView fx:id="reservationsList" prefHeight="140"/>
+
+    <Button text="Logout" onAction="#handleLogout" prefWidth="150"/>
+
+    <Label fx:id="messageLabel" wrapText="true"/>
+
+</VBox>
