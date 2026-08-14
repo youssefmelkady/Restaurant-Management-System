@@ -43,3 +43,24 @@ public class LoginController {
             messageLabel.setStyle("-fx-text-fill: red;");
             messageLabel.setText(e.getMessage());
         } catch (Exception e) {
+            messageLabel.setStyle("-fx-text-fill: red;");
+            messageLabel.setText("Could not load dashboard.");
+        }
+    }
+
+    @FXML
+    private void handleGoToRegister() {
+        switchScene("/fxml/register.fxml");
+    }
+
+    private void switchScene(String fxmlPath) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            messageLabel.setStyle("-fx-text-fill: red;");
+            messageLabel.setText("Could not load screen.");
+        }
+    }
+}
