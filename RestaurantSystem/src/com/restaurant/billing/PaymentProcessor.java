@@ -4,13 +4,14 @@ import com.restaurant.enums.PaymentMethod;
 
 public class PaymentProcessor {
 
-    private static final int POINTS_PER_EGP = 1;
+    private static final int POINTS_PER_EGP = 10;
 
     public boolean processPayment(
             Invoice invoice,
             CustomerAccount account,
             PaymentMethod method) {
 
+        //throwing exception when a value cannot be null
         if (invoice == null) {
             throw new IllegalArgumentException(
                     "Invoice cannot be null"
@@ -29,6 +30,7 @@ public class PaymentProcessor {
             );
         }
 
+        //pervent the invoice to paid twice
         if (invoice.isPaid()) {
             return false;
         }
@@ -45,6 +47,7 @@ public class PaymentProcessor {
 
         } else if (method == PaymentMethod.BALANCE) {
 
+            //deduct from user balance
             successful =
                     account.deductBalance(
                             invoice.calculateTotal()
@@ -52,18 +55,21 @@ public class PaymentProcessor {
 
         } else if (method == PaymentMethod.LOYALTY_POINTS) {
 
+            //check the required poinst is effiecent
             int requiredPoints =
                     (int) Math.ceil(
                             invoice.calculateTotal()
                                     * POINTS_PER_EGP
                     );
 
+            //deduct from user loyalty points
             successful =
                     account.deductLoyaltyPoints(
                             requiredPoints
                     );
         }
 
+        //submitting paid
         if (successful) {
             invoice.markAsPaid(method);
         }
