@@ -1,4 +1,4 @@
-package src.com.restaurant;
+package com.restaurant;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
