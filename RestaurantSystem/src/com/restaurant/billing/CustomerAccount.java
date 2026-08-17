@@ -1,4 +1,4 @@
-package com.restaurant.billing;
+package src.com.restaurant.billing;
 
 public class CustomerAccount {
 

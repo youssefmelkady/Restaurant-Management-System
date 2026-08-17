@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.restaurant.gui.InvoiceController"
+      fx:controller="com.restaurant.controller.InvoiceController"
       spacing="15"
       prefWidth="500"
       prefHeight="550"

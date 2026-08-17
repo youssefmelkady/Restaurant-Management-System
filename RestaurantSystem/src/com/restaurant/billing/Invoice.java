@@ -1,7 +1,7 @@
-package com.restaurant.billing;
+package src.com.restaurant.billing;
 
-import com.restaurant.enums.PaymentMethod;
-import com.restaurant.interfaces.Payable;
+import src.com.restaurant.enums.PaymentMethod;
+import src.com.restaurant.interfaces.Payable;
 
 public class Invoice implements Payable {
 

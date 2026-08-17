@@ -1,6 +1,6 @@
-package com.restaurant.gui;
+package com.restaurant.controller;
 
-import com.restaurant.billing.Invoice;
+import src.com.restaurant.billing.Invoice;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
