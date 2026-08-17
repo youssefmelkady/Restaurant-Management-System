@@ -21,6 +21,7 @@ public class Invoice implements Payable {
 
     public Invoice(String invoiceId, String orderId, double subtotal) {
 
+        //exception of ids and subtotal
         if (invoiceId == null || invoiceId.trim().isEmpty()) {
             throw new IllegalArgumentException(
                     "Invoice ID cannot be empty"
@@ -44,6 +45,7 @@ public class Invoice implements Payable {
         this.subtotal = subtotal;
         this.paid = false;
 
+        // Calculate the total added with tax and service
         calculateCharges();
     }
 
@@ -93,6 +95,7 @@ public class Invoice implements Payable {
 
     public void markAsPaid(PaymentMethod paymentMethod) {
 
+        //doesn't allow recipt to be paid twice
         if (this.paid) {
             return;
         }
