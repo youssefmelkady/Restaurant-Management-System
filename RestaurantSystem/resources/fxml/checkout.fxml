@@ -1,62 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.restaurant.controller.CheckoutController"
-      stylesheets="@../css/style.css"
-      alignment="CENTER"
-      spacing="15"
-      prefWidth="500"
-      prefHeight="600">
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.restaurant.controller.CheckoutController"
+            stylesheets="@css/styles.css" prefWidth="780" prefHeight="620">
 
-    <padding>
-        <Insets top="30"
-                right="30"
-                bottom="30"
-                left="30"/>
-    </padding>
+    <!--Top part-->
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="navbar">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="Checkout &amp; Payment" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Back" onAction="#handleBack" styleClass="button-danger"/>
+        </HBox>
+    </top>
 
-    <Label text="Restaurant Management System"/>
+    <center>
+        <HBox spacing="20">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
-    <Label text="Checkout / Payment"/>
+            <!--Invoice-->
+            <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="card">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
-    <Label text="Invoice"/>
+                <Label text="Select Order:" styleClass="section-title"/>
+                <ComboBox fx:id="orderComboBox" maxWidth="Infinity"/>
+                <Separator/>
 
-    <Label fx:id="invoiceIdLabel"
-           text="Invoice ID: INV-001"/>
+                <GridPane hgap="10" vgap="8">
+                    <Label text="Invoice ID:"     GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="invoiceIdLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-    <Label fx:id="orderIdLabel"
-           text="Order ID: ORD-001"/>
+                    <Label text="Order ID:"       GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="orderIdLabel"   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <Label fx:id="subtotalLabel"
-           text="Subtotal: 0.00 EGP"/>
+                    <Label text="Subtotal:"       GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Label fx:id="subtotalLabel"  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-    <Label fx:id="taxLabel"
-           text="Tax: 0.00 EGP"/>
+                    <Label text="Tax (14%):"      GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <Label fx:id="taxLabel"       GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-    <Label fx:id="serviceChargeLabel"
-           text="Service Charge: 0.00 EGP"/>
+                    <Label text="Service (12%):"  GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <Label fx:id="serviceChargeLabel" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-    <Label fx:id="totalLabel"
-           text="Total: 0.00 EGP"/>
+                    <Label text="TOTAL:"           GridPane.columnIndex="0" GridPane.rowIndex="5"
+                           style="-fx-font-weight:bold;"/>
+                    <Label fx:id="totalLabel"      GridPane.columnIndex="1" GridPane.rowIndex="5"
+                           styleClass="stat-label"/>
+                </GridPane>
 
-    <Label text="Payment Method"/>
+                <Separator/>
 
-    <ComboBox fx:id="paymentMethod"
-              promptText="Select payment method"/>
+                <TextArea fx:id="invoiceArea" editable="false" prefHeight="160" wrapText="true"
+                          style="-fx-font-family: monospace; -fx-font-size: 12px;"/>
+            </VBox>
 
-    <Button fx:id="confirmPaymentButton"
-            text="Confirm Payment"
-            onAction="#confirmPayment"/>
+            <!--Payment choices-->
+            <VBox spacing="15" prefWidth="220" styleClass="card">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
-    <Button fx:id="viewInvoiceButton"
-            text="View Invoice"
-            onAction="#viewInvoice"
-            disable="true"/>
+                <Label text="Payment Method" styleClass="card-title"/>
+                <Separator/>
 
-</VBox>
+                <RadioButton fx:id="rbCash" text="Cash">
+                    <toggleGroup><ToggleGroup fx:id="paymentGroup"/></toggleGroup>
+                </RadioButton>
+
+                <RadioButton fx:id="rbCard" text="Credit Card" toggleGroup="$paymentGroup"/>
+                <RadioButton fx:id="rbBalance" text="Balance" toggleGroup="$paymentGroup"/>
+                <RadioButton fx:id="rbLoyalty" text="Loyalty Points" toggleGroup="$paymentGroup"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Button text="Confirm Payment" onAction="#confirmPayment"
+                        styleClass="button-success" maxWidth="Infinity"/>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>
