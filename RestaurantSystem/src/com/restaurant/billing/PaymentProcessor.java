@@ -1,6 +1,6 @@
-package src.com.restaurant.billing;
+package com.restaurant.billing;
 
-import src.com.restaurant.enums.PaymentMethod;
+import com.restaurant.enums.PaymentMethod;
 
 public class PaymentProcessor {
 

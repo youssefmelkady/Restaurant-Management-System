@@ -1,4 +1,4 @@
-package src.com.restaurant.enums;
+package com.restaurant.enums;
 
 public enum PaymentMethod {
     CASH,

@@ -1,9 +1,9 @@
 package com.restaurant.controller;
 
-import src.com.restaurant.billing.CustomerAccount;
-import src.com.restaurant.billing.Invoice;
-import src.com.restaurant.billing.PaymentProcessor;
-import src.com.restaurant.enums.PaymentMethod;
+import com.restaurant.billing.CustomerAccount;
+import com.restaurant.billing.Invoice;
+import com.restaurant.billing.PaymentProcessor;
+import com.restaurant.enums.PaymentMethod;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

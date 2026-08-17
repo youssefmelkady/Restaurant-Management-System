@@ -1,4 +1,4 @@
-package src.com.restaurant.interfaces;
+package com.restaurant.interfaces;
 
 public interface Payable {
 
