@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import com.restaurant.controller.SceneNavigator;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -113,6 +114,11 @@ public class CheckoutController {
                         invoice.getTotal()
                 )
         );
+    }
+
+    @FXML
+    private void handleBack() {
+        SceneNavigator.navigateTo("customer-dashboard.fxml");
     }
 
     @FXML
@@ -221,7 +227,7 @@ public class CheckoutController {
             FXMLLoader loader =
                     new FXMLLoader(
                             getClass().getResource(
-                                    "/fxml/invoice.fxml"
+                                    "/invoice.fxml"
                             )
                     );
 
