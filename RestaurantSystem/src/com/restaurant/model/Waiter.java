@@ -1,34 +1,40 @@
 package com.restaurant.model;
 
+import com.restaurant.db.RestaurantDatabase;
+import com.restaurant.enums.OrderStatus;
+import com.restaurant.enums.Role;
 import com.restaurant.enums.TableStatus;
+import java.time.LocalDate;
+import java.util.List;
 
-public class Table {
-    private String tableNumber;
-    private int capacity;
-    private String location; // Indoor, Outdoor, VIP
-    private TableStatus status;
+public class Waiter extends Staff {
 
-    public Table(String tableNumber, int capacity, String location, TableStatus status) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("Table capacity must be greater than zero");
-        }
-        if (status == null) {
-            throw new IllegalArgumentException("Table status cannot be null");
-        }
-        this.tableNumber = tableNumber;
-        this.capacity = capacity;
-        this.location = location;
-        this.status = status;
+    public Waiter(String id, String username, String password, LocalDate dateOfBirth, int workingHours) {
+        super(id, username, password, dateOfBirth, Role.WAITER, workingHours);
     }
 
-    public String getTableNumber() { return tableNumber; }
-    public int getCapacity() { return capacity; }
-    public String getLocation() { return location; }
-    public TableStatus getStatus() { return status; }
-    public void setStatus(TableStatus status) { this.status = status; }
-
-    @Override
-    public String toString() {
-        return "Table " + tableNumber + " | " + location + " | Seats: " + capacity + " | " + status;
+    public void updateOrderStatus(String orderId, OrderStatus newStatus) {
+        for (Order o : RestaurantDatabase.orders) {
+            if (o.getOrderId().equals(orderId)) {
+                o.setStatus(newStatus);
+                // If PAID, free the table
+                if (newStatus == OrderStatus.PAID) {
+                    o.getTable().setStatus(TableStatus.AVAILABLE);
+                }
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Order not found: " + orderId);
     }
+
+    public Order takeOrder(String orderId, Customer customer, Table table) {
+        Order order = new Order(orderId, customer, table);
+        RestaurantDatabase.orders.add(order);
+        table.setStatus(TableStatus.OCCUPIED);
+        return order;
+    }
+
+    public List<Order> getAllOrders() { return RestaurantDatabase.orders; }
+    public List<Table> getAllTables() { return RestaurantDatabase.tables; }
+    public List<Reservation> getAllReservations() { return RestaurantDatabase.reservations; }
 }
