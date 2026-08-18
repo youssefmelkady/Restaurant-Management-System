@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.restaurant.controller.TableBrowsingController"
+            stylesheets="@css/styles.css" prefWidth="800" prefHeight="600">
+
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="navbar">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="Browse Tables" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusLabel" style="-fx-text-fill: #f39c12;"/>
+            <Button text="Refresh" onAction="#handleRefresh" styleClass="button-secondary"/>
+            <Button text="Back" onAction="#handleBack" styleClass="button-danger"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="20">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+            <!-- Left: Table List -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="Available Tables" styleClass="section-title"/>
+                <!-- Filters -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Location:"/>
+                    <ComboBox fx:id="locationFilter" onAction="#handleFilter" prefWidth="120"/>
+                    <Label text="Min Seats:"/>
+                    <Spinner fx:id="capacityFilter" prefWidth="70"/>
+                    <Button text="Filter" onAction="#handleFilter" styleClass="button-secondary"/>
+                </HBox>
+                <ListView fx:id="tableListView" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- Right: Reservation Form -->
+            <VBox spacing="15" prefWidth="260" styleClass="card">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="Make Reservation" styleClass="card-title"/>
+                <Separator/>
+                <Label text="Date:"/>
+                <DatePicker fx:id="reservationDate" maxWidth="Infinity"/>
+                <Label text="Time (HH:MM):"/>
+                <TextField fx:id="timeSlotField" promptText="e.g. 19:00"/>
+                <Label text="Party Size:"/>
+                <Spinner fx:id="partySizeSpinner" prefWidth="100"/>
+                <Button text="Reserve Selected Table" onAction="#handleReserve"
+                        styleClass="button-primary" maxWidth="Infinity"/>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

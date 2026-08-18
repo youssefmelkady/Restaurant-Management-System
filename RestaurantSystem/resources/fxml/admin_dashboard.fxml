@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.restaurant.controller.AdminController"
+            stylesheets="@css/styles.css" prefWidth="950" prefHeight="680">
+
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="navbar">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="Admin Dashboard" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="button-danger"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane>
+
+            <!-- Tables Tab -->
+            <Tab text="Tables" closable="false">
+                <HBox spacing="20">
+                    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <Label text="All Tables" styleClass="section-title"/>
+                        <ListView fx:id="tableListView" VBox.vgrow="ALWAYS"/>
+                        <Button text="Delete Selected Table" onAction="#handleDeleteTable" styleClass="button-danger"/>
+                    </VBox>
+                    <VBox spacing="10" prefWidth="220" styleClass="card">
+                        <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <Label text="Add New Table" styleClass="card-title"/>
+                        <Label text="Location:"/>
+                        <ComboBox fx:id="newTableLocation" maxWidth="Infinity"/>
+                        <Label text="Capacity:"/>
+                        <TextField fx:id="newTableCapacity" promptText="e.g. 4"/>
+                        <Button text="Add Table" onAction="#handleAddTable" styleClass="button-primary" maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+            </Tab>
+
+            <!-- Menu Items Tab -->
+            <Tab text="Menu Items" closable="false">
+                <HBox spacing="20">
+                    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <Label text="All Menu Items" styleClass="section-title"/>
+                        <ListView fx:id="menuItemListView" VBox.vgrow="ALWAYS"/>
+                        <HBox spacing="10">
+                            <Button text="Toggle Availability" onAction="#handleToggleAvailability" styleClass="button-secondary"/>
+                            <Button text="Delete Item" onAction="#handleDeleteMenuItem" styleClass="button-danger"/>
+                        </HBox>
+                    </VBox>
+                    <VBox spacing="10" prefWidth="240" styleClass="card">
+                        <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <Label text="Add Menu Item" styleClass="card-title"/>
+                        <TextField fx:id="newItemName" promptText="Name"/>
+                        <TextField fx:id="newItemPrice" promptText="Price (EGP)"/>
+                        <TextField fx:id="newItemDesc" promptText="Description"/>
+                        <ComboBox fx:id="newItemCategory" promptText="Category" maxWidth="Infinity"/>
+                        <CheckBox fx:id="newItemAvailable" text="Available" selected="true"/>
+                        <Button text="Add Item" onAction="#handleAddMenuItem" styleClass="button-primary" maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+            </Tab>
+
+            <!-- Overview Tab -->
+            <Tab text="Overview" closable="false">
+                <HBox spacing="15">
+                    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="Customers" styleClass="section-title"/>
+                        <ListView fx:id="customersListView" VBox.vgrow="ALWAYS"/>
+                    </VBox>
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="Orders" styleClass="section-title"/>
+                        <ListView fx:id="ordersListView" VBox.vgrow="ALWAYS"/>
+                    </VBox>
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="Reservations" styleClass="section-title"/>
+                        <ListView fx:id="reservationsListView" VBox.vgrow="ALWAYS"/>
+                    </VBox>
+                </HBox>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>

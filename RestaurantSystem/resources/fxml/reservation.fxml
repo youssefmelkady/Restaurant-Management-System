@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.restaurant.controller.ReservationController"
+            stylesheets="@css/styles.css" prefWidth="700" prefHeight="500">
+
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="navbar">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="My Reservations" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Back" onAction="#handleBack" styleClass="button-danger"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="15">
+            <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+            <Label text="Active Reservations" styleClass="section-title"/>
+            <ListView fx:id="reservationListView" VBox.vgrow="ALWAYS"/>
+            <Button text="Cancel Selected Reservation" onAction="#handleCancel"
+                    styleClass="button-danger" maxWidth="Infinity"/>
+        </VBox>
+    </center>
+</BorderPane>
