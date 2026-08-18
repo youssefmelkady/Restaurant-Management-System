@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.restaurant.controller.MenuController"
+            stylesheets="@css/styles.css" prefWidth="900" prefHeight="620">
+
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="navbar">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="Menu &amp; Order" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Async Refresh" onAction="#handleAsyncRefresh" styleClass="button-secondary"/>
+            <Button text="Back" onAction="#handleBack" styleClass="button-danger"/>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.55">
+            <VBox spacing="10">
+                <padding><Insets top="15" right="10" bottom="15" left="15"/></padding>
+                <Label text="Browse Menu" styleClass="section-title"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Category:"/>
+                    <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryChange" promptText="All Categories" prefWidth="180"/>
+                </HBox>
+                <ListView fx:id="menuListView" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Qty:"/>
+                    <Spinner fx:id="quantitySpinner" prefWidth="70"/>
+                    <TextField fx:id="notesField" promptText="Notes (e.g. No onions)" HBox.hgrow="ALWAYS"/>
+                    <Button text="Add to Order" onAction="#handleAddToOrder" styleClass="button-primary"/>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="10">
+                <padding><Insets top="15" right="15" bottom="15" left="10"/></padding>
+                <Label text="Current Order Cart" styleClass="section-title"/>
+                <TableView fx:id="orderTableView" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colItemName"  text="Item"       prefWidth="130"/>
+                        <TableColumn fx:id="colQty"       text="Qty"        prefWidth="50"/>
+                        <TableColumn fx:id="colUnitPrice" text="Unit Price" prefWidth="90"/>
+                        <TableColumn fx:id="colTotal"     text="Total"      prefWidth="90"/>
+                        <TableColumn fx:id="colNotes"     text="Notes"      prefWidth="110"/>
+                    </columns>
+                </TableView>
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Label text="Running Total:" style="-fx-font-weight:bold; -fx-font-size:15px;"/>
+                    <Label fx:id="runningTotalLabel" text="0.00 EGP" styleClass="stat-label"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Clear Order"  onAction="#handleClearOrder"  styleClass="button-secondary"/>
+                    <Button text="Submit Order" onAction="#handleSubmitOrder" styleClass="button-success"/>
+                </HBox>
+                <TitledPane text="Admin / Waiter Controls" expanded="false">
+                    <VBox spacing="8">
+                        <padding><Insets top="8" right="8" bottom="8" left="8"/></padding>
+                        <TextField fx:id="newItemName"  promptText="Item Name"/>
+                        <TextField fx:id="newItemPrice" promptText="Price (EGP)"/>
+                        <TextField fx:id="newItemDesc"  promptText="Description"/>
+                        <CheckBox  fx:id="newItemAvailable" text="Available" selected="true"/>
+                        <Button text="Add New Item" onAction="#handleAdminAddItem" maxWidth="Infinity" styleClass="button-primary"/>
+                    </VBox>
+                </TitledPane>
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>
