@@ -89,7 +89,7 @@ public class Admin extends Staff implements Manageable<Table> {
         return RestaurantDatabase.menuItems;
     }
 
-    // ---- MenuCategory CRUD ----
+    // ----  MenuCategory CRUD ----
     public void addCategory(MenuCategory category) {
         RestaurantDatabase.categories.add(category);
     }
@@ -102,7 +102,7 @@ public class Admin extends Staff implements Manageable<Table> {
         return RestaurantDatabase.categories;
     }
 
-    // ---- View all customers / orders ----
+    //  View all customers 
     public List<Customer> getAllCustomers() {
         return RestaurantDatabase.customers;
     }

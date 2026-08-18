@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.restaurant.controller.CustomerDashboardController"
+            stylesheets="@css/styles.css" prefWidth="800" prefHeight="600">
+
+    <!-- Top Nav Bar -->
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="navbar">
+            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
+            <Label text="Restaurant System" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Welcome, "/>
+            <Label fx:id="usernameLabel" style="-fx-font-weight: bold; -fx-text-fill: #f39c12;"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="button-danger"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="20">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+            <!-- Left: Profile Card -->
+            <VBox spacing="15" prefWidth="220" styleClass="card">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="My Profile" styleClass="card-title"/>
+                <Separator/>
+                <Label text="Balance:"/>
+                <Label fx:id="balanceLabel" styleClass="stat-label"/>
+                <Label text="Loyalty Points:"/>
+                <Label fx:id="loyaltyLabel" styleClass="stat-label"/>
+                <Label text="Dietary Preference:"/>
+                <Label fx:id="dietaryLabel" style="-fx-font-size: 12px;"/>
+            </VBox>
+
+            <!-- Right: Actions + Lists -->
+            <VBox spacing="15" HBox.hgrow="ALWAYS">
+                <!-- Action Buttons -->
+                <HBox spacing="10">
+                    <Button text="Browse Tables" onAction="#handleBrowseTables" styleClass="button-primary"/>
+                    <Button text="Browse Menu" onAction="#handleBrowseMenu" styleClass="button-primary"/>
+                    <Button text="My Reservations" onAction="#handleManageReservations" styleClass="button-secondary"/>
+                    <Button text="Checkout" onAction="#handleCheckout" styleClass="button-success"/>
+                </HBox>
+
+                <!-- Reservations -->
+                <VBox spacing="8" VBox.vgrow="ALWAYS">
+                    <Label text="Upcoming Reservations" styleClass="section-title"/>
+                    <ListView fx:id="reservationsList" VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <!-- Orders -->
+                <VBox spacing="8" VBox.vgrow="ALWAYS">
+                    <Label text="My Orders" styleClass="section-title"/>
+                    <ListView fx:id="ordersList" VBox.vgrow="ALWAYS"/>
+                </VBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>
