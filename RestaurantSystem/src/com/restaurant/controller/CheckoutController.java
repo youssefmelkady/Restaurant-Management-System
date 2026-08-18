@@ -3,275 +3,188 @@ package com.restaurant.controller;
 import com.restaurant.billing.CustomerAccount;
 import com.restaurant.billing.Invoice;
 import com.restaurant.billing.PaymentProcessor;
+import com.restaurant.db.RestaurantDatabase;
+import com.restaurant.enums.OrderStatus;
+import com.restaurant.enums.TableStatus;
 import com.restaurant.enums.PaymentMethod;
-
+import com.restaurant.model.Customer;
+import com.restaurant.model.Order;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import com.restaurant.controller.SceneNavigator;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleGroup;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CheckoutController {
 
-    @FXML
-    private Label invoiceIdLabel;
+    @FXML private ComboBox<Order> orderComboBox;
+    @FXML private Label           invoiceIdLabel;
+    @FXML private Label           orderIdLabel;
+    @FXML private Label           subtotalLabel;
+    @FXML private Label           taxLabel;
+    @FXML private Label           serviceChargeLabel;
+    @FXML private Label           totalLabel;
+    @FXML private RadioButton     rbCash;
+    @FXML private RadioButton     rbCard;
+    @FXML private RadioButton     rbBalance;
+    @FXML private RadioButton     rbLoyalty;
+    @FXML private ToggleGroup     paymentGroup;
+    @FXML private TextArea        invoiceArea;
 
-    @FXML
-    private Label orderIdLabel;
-
-    @FXML
-    private Label subtotalLabel;
-
-    @FXML
-    private Label taxLabel;
-
-    @FXML
-    private Label serviceChargeLabel;
-
-    @FXML
-    private Label totalLabel;
-
-    @FXML
-    private ComboBox<String> paymentMethod;
-
-    @FXML
-    private Button confirmPaymentButton;
-
-    @FXML
-    private Button viewInvoiceButton;
-
-    private Invoice invoice;
-
-    private CustomerAccount customerAccount;
-
-    private final PaymentProcessor paymentProcessor =
-            new PaymentProcessor();
+    private Invoice         currentInvoice;
+    private CustomerAccount currentAccount;
+    private final PaymentProcessor paymentProcessor = new PaymentProcessor();
 
     @FXML
     public void initialize() {
+        Customer customer = SessionManager.getInstance().getCurrentCustomer();
+        if (customer == null) {
+            SceneNavigator.navigateTo("login.fxml");
+            return;
+        }
 
-        paymentMethod.getItems().add("Cash");
-        paymentMethod.getItems().add("Credit Card");
-        paymentMethod.getItems().add("Balance");
-        paymentMethod.getItems().add("Loyalty Points");
+        List<Order> unpaid = RestaurantDatabase.orders.stream()
+                .filter(o -> o.getCustomer() != null &&
+                        o.getCustomer().getId().equals(customer.getId()))
+                .filter(o -> o.getStatus() != OrderStatus.PAID)
+                .collect(Collectors.toList());
 
-        // Temporary data for GUI testing
-        invoice = new Invoice(
-                "INV-001",
-                "ORD-001",
-                1000.00
-        );
+        orderComboBox.setItems(FXCollections.observableArrayList(unpaid));
 
-        customerAccount = new CustomerAccount(
-                5000.00,
-                2000
-        );
+        orderComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Order o, boolean empty) {
+                super.updateItem(o, empty);
+                setText(empty || o == null ? null :
+                        "Order " + o.getOrderId() + " — " +
+                                o.getItems().size() + " items — " +
+                                String.format("%.2f EGP", o.calculateTotal()));
+            }
+        });
 
-        viewInvoiceButton.setDisable(true);
+        orderComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Order o, boolean empty) {
+                super.updateItem(o, empty);
+                setText(empty || o == null ? "Select an order..." :
+                        "Order " + o.getOrderId() + " — " +
+                                String.format("%.2f EGP", o.calculateTotal()));
+            }
+        });
 
-        displayInvoice();
+        orderComboBox.setOnAction(e -> buildInvoice());
     }
 
-    private void displayInvoice() {
+    private void buildInvoice() {
+        Order selected = orderComboBox.getValue();
+        if (selected == null) return;
 
-        invoiceIdLabel.setText(
-                "Invoice ID: " + invoice.getInvoiceId()
+        Customer customer = SessionManager.getInstance().getCurrentCustomer();
+        String invoiceId = RestaurantDatabase.nextInvoiceId();
+
+        currentInvoice = new Invoice(invoiceId, selected.getOrderId(), selected.calculateTotal());
+        currentAccount = new CustomerAccount(customer.getBalance(), customer.getLoyaltyPoints());
+
+        invoiceIdLabel.setText(currentInvoice.getInvoiceId());
+        orderIdLabel.setText(currentInvoice.getOrderId());
+        subtotalLabel.setText(String.format("%.2f EGP", currentInvoice.getSubtotal()));
+        taxLabel.setText(String.format("%.2f EGP", currentInvoice.getTax()));
+        serviceChargeLabel.setText(String.format("%.2f EGP", currentInvoice.getServiceCharge()));
+        totalLabel.setText(String.format("%.2f EGP", currentInvoice.getTotal()));
+
+        invoiceArea.setText(
+                "===== INVOICE " + currentInvoice.getInvoiceId() + " =====\n" +
+                        "Order       : " + currentInvoice.getOrderId() + "\n" +
+                        String.format("Subtotal     : %.2f EGP\n", currentInvoice.getSubtotal()) +
+                        String.format("Tax (14%%)   : %.2f EGP\n", currentInvoice.getTax()) +
+                        String.format("Service (12%%): %.2f EGP\n", currentInvoice.getServiceCharge()) +
+                        "-------------------------\n" +
+                        String.format("TOTAL        : %.2f EGP\n", currentInvoice.getTotal()) +
+                        "Status: UNPAID"
         );
-
-        orderIdLabel.setText(
-                "Order ID: " + invoice.getOrderId()
-        );
-
-        subtotalLabel.setText(
-                String.format(
-                        "Subtotal: %.2f EGP",
-                        invoice.getSubtotal()
-                )
-        );
-
-        taxLabel.setText(
-                String.format(
-                        "Tax: %.2f EGP",
-                        invoice.getTax()
-                )
-        );
-
-        serviceChargeLabel.setText(
-                String.format(
-                        "Service Charge: %.2f EGP",
-                        invoice.getServiceCharge()
-                )
-        );
-
-        totalLabel.setText(
-                String.format(
-                        "Total: %.2f EGP",
-                        invoice.getTotal()
-                )
-        );
-    }
-
-    @FXML
-    private void handleBack() {
-        SceneNavigator.navigateTo("customer-dashboard.fxml");
     }
 
     @FXML
     public void confirmPayment() {
-
-        if (invoice.isPaid()) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Payment",
-                    "This invoice has already been paid."
-            );
-
+        if (currentInvoice == null) {
+            AlertHelper.error("Error", "Please select an order first.");
+            return;
+        }
+        if (currentInvoice.isPaid()) {
+            AlertHelper.info("Already Paid", "This order has already been paid.");
             return;
         }
 
-        if (paymentMethod.getValue() == null) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Payment",
-                    "Please select a payment method."
-            );
-
+        PaymentMethod method = getSelectedMethod();
+        if (method == null) {
+            AlertHelper.error("Error", "Please select a payment method.");
             return;
         }
 
-        PaymentMethod selectedMethod;
+        boolean success = paymentProcessor.processPayment(currentInvoice, currentAccount, method);
 
-        switch (paymentMethod.getValue()) {
+        if (success) {
+            Customer customer = SessionManager.getInstance().getCurrentCustomer();
 
-            case "Cash":
-                selectedMethod = PaymentMethod.CASH;
-                break;
+            if (method == PaymentMethod.BALANCE) {
+                customer.setBalance(currentAccount.getBalance());
+            } else if (method == PaymentMethod.LOYALTY_POINTS) {
+                int used = (int) Math.ceil(currentInvoice.calculateTotal());
+                customer.deductLoyaltyPoints(used);
+            }
 
-            case "Credit Card":
-                selectedMethod = PaymentMethod.CREDIT_CARD;
-                break;
+            int pointsEarned = (int)(currentInvoice.getSubtotal() / 10);
+            customer.addLoyaltyPoints(pointsEarned);
 
-            case "Balance":
-                selectedMethod = PaymentMethod.BALANCE;
-                break;
+            Order selected = orderComboBox.getValue();
+            if (selected != null) {
+                selected.setStatus(OrderStatus.PAID);
+                if (selected.getTable() != null
+                        && selected.getTable().getStatus() == TableStatus.OCCUPIED) {
+                    selected.getTable().setStatus(TableStatus.AVAILABLE);
+                }
+            }
 
-            case "Loyalty Points":
-                selectedMethod =
-                        PaymentMethod.LOYALTY_POINTS;
-                break;
+            RestaurantDatabase.invoices.add(currentInvoice);
 
-            default:
-                showAlert(
-                        Alert.AlertType.ERROR,
-                        "Payment",
-                        "Invalid payment method."
-                );
-                return;
-        }
-
-        boolean successful =
-                paymentProcessor.processPayment(
-                        invoice,
-                        customerAccount,
-                        selectedMethod
-                );
-
-        if (successful) {
-
-            confirmPaymentButton.setDisable(true);
-
-            viewInvoiceButton.setDisable(false);
-
-            showAlert(
-                    Alert.AlertType.INFORMATION,
-                    "Payment",
-                    "Payment confirmed successfully!\n\n"
-                            + "Invoice: "
-                            + invoice.getInvoiceId()
-                            + "\n"
-                            + "Payment Method: "
-                            + paymentMethod.getValue()
-                            + "\n"
-                            + "Total: "
-                            + String.format(
-                            "%.2f",
-                            invoice.getTotal()
-                    )
-                            + " EGP"
+            invoiceArea.setText(
+                    "===== INVOICE " + currentInvoice.getInvoiceId() + " =====\n" +
+                            "Order       : " + currentInvoice.getOrderId() + "\n" +
+                            String.format("Subtotal     : %.2f EGP\n", currentInvoice.getSubtotal()) +
+                            String.format("Tax (14%%)   : %.2f EGP\n", currentInvoice.getTax()) +
+                            String.format("Service (12%%): %.2f EGP\n", currentInvoice.getServiceCharge()) +
+                            "-------------------------\n" +
+                            String.format("TOTAL        : %.2f EGP\n", currentInvoice.getTotal()) +
+                            "Status: PAID via " + method
             );
 
+            AlertHelper.info("Payment Confirmed",
+                    "Invoice " + currentInvoice.getInvoiceId() + " paid successfully!\n" +
+                            "Payment Method: " + method + "\n" +
+                            "Loyalty Points Earned: " + pointsEarned);
         } else {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Payment Failed",
-                    "Payment could not be completed.\n\n"
-                            + "Please check the customer's "
-                            + "balance or loyalty points."
-            );
+            AlertHelper.error("Payment Failed",
+                    "Payment could not be completed.\n" +
+                            "Please check your balance or loyalty points.");
         }
+    }
+
+    private PaymentMethod getSelectedMethod() {
+        if (rbCash.isSelected())    return PaymentMethod.CASH;
+        if (rbCard.isSelected())    return PaymentMethod.CREDIT_CARD;
+        if (rbBalance.isSelected()) return PaymentMethod.BALANCE;
+        if (rbLoyalty.isSelected()) return PaymentMethod.LOYALTY_POINTS;
+        return null;
     }
 
     @FXML
-    public void viewInvoice() {
-
-        try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/invoice.fxml"
-                            )
-                    );
-
-            Parent root = loader.load();
-
-            InvoiceController controller =
-                    loader.getController();
-
-            controller.setInvoice(invoice);
-
-            Stage stage = new Stage();
-
-            stage.setTitle("Invoice");
-
-            stage.setScene(
-                    new Scene(root)
-            );
-
-            stage.show();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Invoice",
-                    "Could not open the invoice screen."
-            );
-        }
-    }
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message) {
-
-        Alert alert =
-                new Alert(type);
-
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-
-        alert.showAndWait();
+    public void handleBack() {
+        SceneNavigator.navigateTo("customer_dashboard.fxml");
     }
 }
