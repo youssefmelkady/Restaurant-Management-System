@@ -59,7 +59,7 @@ public class PaymentProcessor {
             int requiredPoints =
                     (int) Math.ceil(
                             invoice.calculateTotal()
-                                    * POINTS_PER_EGP
+                                    / POINTS_PER_EGP
                     );
 
             //deduct from user loyalty points
